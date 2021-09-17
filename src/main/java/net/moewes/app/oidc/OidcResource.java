@@ -135,31 +135,10 @@ public class OidcResource {
     @Produces(MediaType.TEXT_HTML)
     public Response loginForm(@Context UriInfo uriInfo) {
 
+        String loginForm = FormLayout.getLoginForm();
         StringBuilder sb = new StringBuilder();
 
-        sb.append("<!doctype html>");
-        sb.append("<html>");
-        sb.append("<head>");
-        sb.append("<meta charset=\"utf-8\">");
-        sb.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-        sb.append("<script src=\"/webjars/cloud-ui-oidc-ui5/0.1.0/index.js\"></script>");
-        sb.append("</head>");
-        sb.append("<body>");
-        sb.append("<div style=\"height: 100vh;\">");
-        sb.append("<ui5-page background-design=\"Solid\">");
-        sb.append("<form method=\"post\">");
-        sb.append("<ui5-label for=\"fname\">Username</ui5-label>");
-        sb.append("<ui5-input type=\"text\" id=\"username\" name=\"username\"></ui5-input><br><br>");
-        sb.append("<ui5-label for=\"lname\">Password</ui5-label>");
-        sb.append("<ui5-input type=\"text\" id=\"lname\" name=\"lname\"></ui5-input><br><br>");
-        sb.append("<ui5-button submits=\"true\" >Login</ui5-button>");
-        sb.append("</form>");
-        sb.append("</ui5-page>");
-        sb.append("</div>");
-        sb.append("</body>");
-        sb.append("</html>");
-
-        return Response.ok().entity(sb.toString()).build();
+        return Response.ok().entity(loginForm).build();
     }
 
     @Path("/login")
