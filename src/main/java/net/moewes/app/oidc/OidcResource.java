@@ -232,7 +232,7 @@ public class OidcResource {
                 .expiresAt(etime.toEpochSecond())
                 .issuedAt(ztime.toEpochSecond())
                 .preferredUserName(session.getUsername());
-
+        
         String s = builder.jws().keyId(certBean.getKeyId()).sign(certBean.getPrivateKey());
 
         log.debug(s);
