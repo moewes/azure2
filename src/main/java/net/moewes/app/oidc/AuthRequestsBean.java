@@ -61,7 +61,17 @@ public class AuthRequestsBean {
     }
 
     public void logout(AuthSession session) {
+
         sessions.remove(session.getCode());
+    }
+
+    public boolean checkUser(String username, String password) {
+
+        if ("admin".equals(username) && "secret".equals(password)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // TODO getIdToken(String code)

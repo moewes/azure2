@@ -1,7 +1,7 @@
 package net.moewes.app.oidc;
 
 import java.time.ZonedDateTime;
-import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -31,6 +31,8 @@ import static net.moewes.app.oidc.AuthRequestsBean.STATE;
 @Path("/")
 public class OidcResource {
 
+    private static final String MESSAGE = "message";
+
     @ConfigProperty(name = "cloudui.oidc.baseurl")
     String baseUrl;
 
@@ -59,17 +61,12 @@ public class OidcResource {
             return Response.status(400, "Undefined Scope").build();
         }
 
-        UriBuilder locationUriBuilder = UriBuilder.fromPath("/error");
+        UriBuilder locationUriBuilder;
 
         sid = authRequestsBean.getSession(sid) == null ? null : sid;
 
         if (sid == null) { // or sid not valid // FIXME
-            locationUriBuilder = UriBuilder.fromPath("/login");
-            locationUriBuilder
-                    .queryParam(STATE, authorizationRequest.getState())
-                    .queryParam(REDIRECT_URI, authorizationRequest.getRedirectUri())
-                    .queryParam(CLIENT_ID, authorizationRequest.getClientId())
-                    .queryParam(RESPONSE_TYPE, authorizationRequest.getResponseType());
+            locationUriBuilder = getLoginFormLocationUri(authorizationRequest,null);
         } else {
             locationUriBuilder = UriBuilder.fromPath(authorizationRequest.getRedirectUri());
             if ("code".equals(authorizationRequest.getResponseType())) {
@@ -111,7 +108,7 @@ public class OidcResource {
         log.debug("/jwks called");
 
         JwksResponse result = new JwksResponse();
-        result.setKeys(Arrays.asList(certBean.getJwk()));
+        result.setKeys(List.of(certBean.getJwk()));
 
         return Response.ok().entity(result).build();
     }
@@ -135,9 +132,8 @@ public class OidcResource {
     @Produces(MediaType.TEXT_HTML)
     public Response loginForm(@Context UriInfo uriInfo) {
 
-        String loginForm = FormLayout.getLoginForm();
-        StringBuilder sb = new StringBuilder();
-
+        String message = uriInfo.getQueryParameters().getFirst(MESSAGE);
+        String loginForm = FormLayout.getLoginForm(message);
         return Response.ok().entity(loginForm).build();
     }
 
@@ -157,17 +153,32 @@ public class OidcResource {
         // -> Nein Bad Request
         // Verify User/Password
         String username = form.getFirst("username");
-        // -> Nein Redirect Login Form mit Message
-        // Redirect zur Anwendung
+        String password = form.getFirst("password");
+        if ( !authRequestsBean.checkUser(username,password) ) {
+            String message = "username or password is incorrect";
+            return Response.status(
+                    Response.Status.FOUND
+            ).location(getLoginFormLocationUri(authRequest,message).build()).build();
+        }
         String code = authRequestsBean.createSession(username);
 
-        UriBuilder locationUriBuilder = UriBuilder.fromPath(authRequest.getRedirectUri());
+        String redirectPath;
+        if (authRequest.getRedirectUri()!=null) { // Request of external App
+            redirectPath = authRequest.getRedirectUri();
+        } else {
+            redirectPath = "/error";
+        }
+
+        UriBuilder locationUriBuilder = UriBuilder.fromPath(redirectPath);
         if ("code".equals(authRequest.getResponseType())) {
             locationUriBuilder.queryParam("state", authRequest.getState())
                     .queryParam("code", code);
         } else {
-            String s = getIdToken(log, authRequest.getClientId(), username); // FIXME
-            locationUriBuilder.queryParam("state", authRequest.getState())
+            String s = getIdToken(log, authRequest.getClientId(), code); // FIXME
+            if (authRequest.getState()!=null) {
+                locationUriBuilder.queryParam(STATE, authRequest.getState());
+            }
+            locationUriBuilder
                     .queryParam("id_token", s)
                     .queryParam("token_type", "bearer")
                     .queryParam("access_token", "1234");
@@ -204,7 +215,7 @@ public class OidcResource {
         response.setToken_type("bearer");
         response.setAccess_token(getAccessToken(log, clientId, code));
         response.setRefresh_token("RE1234"); // FIXME
-        response.setExpires_in(180);
+        response.setExpires_in(900);
 
         return Response.ok().entity(response).build();
     }
@@ -224,7 +235,7 @@ public class OidcResource {
         AuthSession session = authRequestsBean.getSession(code);
         ZonedDateTime ztime = ZonedDateTime.now();
         ztime.toEpochSecond();
-        ZonedDateTime etime = ztime.plusMinutes(3);
+        ZonedDateTime etime = ztime.plusMinutes(15);
 
         JwtClaimsBuilder builder = Jwt.issuer("azure2")
                 .subject(session.getUsername())
@@ -244,7 +255,7 @@ public class OidcResource {
         AuthSession session = authRequestsBean.getSession(code);
         ZonedDateTime ztime = ZonedDateTime.now();
         ztime.toEpochSecond();
-        ZonedDateTime etime = ztime.plusMinutes(3);
+        ZonedDateTime etime = ztime.plusMinutes(15);
 
         JwtClaimsBuilder builder = Jwt.issuer("azure2")
                 .subject(session.getUsername())
@@ -256,5 +267,21 @@ public class OidcResource {
 
         log.debug(s);
         return s;
+    }
+
+    private UriBuilder getLoginFormLocationUri(AuthRequest authorizationRequest, String message) {
+        UriBuilder locationUriBuilder;
+        locationUriBuilder = UriBuilder.fromPath("/login");
+        if (authorizationRequest.isValid()) {
+            locationUriBuilder
+                    .queryParam(STATE, authorizationRequest.getState())
+                    .queryParam(REDIRECT_URI, authorizationRequest.getRedirectUri())
+                    .queryParam(CLIENT_ID, authorizationRequest.getClientId())
+                    .queryParam(RESPONSE_TYPE, authorizationRequest.getResponseType());
+        }
+        if (message!=null) {
+            locationUriBuilder.queryParam(MESSAGE, message);
+        }
+        return locationUriBuilder;
     }
 }

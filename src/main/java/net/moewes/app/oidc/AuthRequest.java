@@ -3,6 +3,9 @@ package net.moewes.app.oidc;
 import lombok.Builder;
 import lombok.Data;
 
+import static net.moewes.app.oidc.AuthRequestsBean.*;
+import static net.moewes.app.oidc.AuthRequestsBean.RESPONSE_TYPE;
+
 @Data
 @Builder
 public class AuthRequest {
@@ -23,4 +26,7 @@ public class AuthRequest {
     // login_hint
     // acr_values
 
+    public boolean isValid() {
+        return state != null && redirectUri != null && clientId != null && responseType != null;
+    }
 }
