@@ -3,9 +3,6 @@ package net.moewes.app.oidc;
 import lombok.Builder;
 import lombok.Data;
 
-import static net.moewes.app.oidc.AuthRequestsBean.*;
-import static net.moewes.app.oidc.AuthRequestsBean.RESPONSE_TYPE;
-
 @Data
 @Builder
 public class AuthRequest {

@@ -17,7 +17,7 @@ import org.jose4j.base64url.Base64;
 public class CertBean {
 
     private KeyPair keyPair;
-    private String kid = UUID.randomUUID().toString();
+    private final String kid = UUID.randomUUID().toString();
 
     @PostConstruct
     public void init() {

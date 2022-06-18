@@ -36,8 +36,8 @@ public class FormLayout {
         sb.append("</div>");
         if (message != null) {
             sb.append("<div>");
-            sb.append("<ui5-message-strip hide-close-button design=\"Warning\">" + message + "</ui5" +
-                    "-message-strip>");
+            sb.append("<ui5-message-strip hide-close-button design=\"Warning\">" + message
+                    + "</ui5-message-strip>");
             sb.append("</div>");
         }
         sb.append("</ui5-dialog>");

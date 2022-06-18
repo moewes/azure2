@@ -142,7 +142,7 @@
                         <java.util.logging.manager>
                             org.jboss.logmanager.LogManager
                         </java.util.logging.manager>
-                        <maven.home>${maven.home}</maven.home>
+                        <!--maven.home>${maven.home}</maven.home-->
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -172,7 +172,7 @@
                         </property>
                         <property>
                             <name>FUNCTIONS_EXTENSION_VERSION</name>
-                            <value>~3</value>
+                            <value>~4</value>
                         </property>
                         <property>
                             <name>FUNCTIONS_WORKER_RUNTIME</name>

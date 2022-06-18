@@ -23,7 +23,7 @@ public class AuthRequestsBean {
     @Inject
     Logger log;
 
-    private Map<String, AuthSession> sessions = new HashMap<>();
+    private final Map<String, AuthSession> sessions = new HashMap<>();
 
     public AuthRequest extractRequestParameter(UriInfo uriInfo) {
 
