@@ -24,8 +24,7 @@
         <org.mapstruct.version>1.5.1.Final</org.mapstruct.version>
         <lombok.version>1.18.24</lombok.version>
 
-        <azure.functions.maven.plugin.version>1.14.1
-        </azure.functions.maven.plugin.version>
+        <azure.functions.maven.plugin.version>1.18.0</azure.functions.maven.plugin.version>
         <!-- put these variables in your settings.xml -->
         <!--suppress UnresolvedMavenProperty -->
         <functionAppName>${oidc.azure.functionAppName}</functionAppName>
