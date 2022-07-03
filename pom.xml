@@ -8,24 +8,23 @@
     <artifactId>azure2</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <properties>
-        <compiler-plugin.version>3.8.1</compiler-plugin.version>
+        <compiler-plugin.version>3.10.1</compiler-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8
         </project.reporting.outputEncoding>
-        <quarkus-plugin.version>2.9.2.Final</quarkus-plugin.version>
+        <quarkus-plugin.version>2.10.1.Final</quarkus-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>2.9.2.Final</quarkus.platform.version>
-        <resources-plugin.version>3.1.0</resources-plugin.version>
+        <quarkus.platform.version>2.10.1.Final</quarkus.platform.version>
+        <resources-plugin.version>3.2.0</resources-plugin.version>
         <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
-        <org.mapstruct.version>1.5.1.Final</org.mapstruct.version>
+        <org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
         <lombok.version>1.18.24</lombok.version>
 
-        <azure.functions.maven.plugin.version>1.14.1
-        </azure.functions.maven.plugin.version>
+        <azure.functions.maven.plugin.version>1.18.0</azure.functions.maven.plugin.version>
         <!-- put these variables in your settings.xml -->
         <!--suppress UnresolvedMavenProperty -->
         <functionAppName>${oidc.azure.functionAppName}</functionAppName>
