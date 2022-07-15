@@ -89,12 +89,12 @@
         <dependency>
             <groupId>net.moewes.cloud-ui</groupId>
             <artifactId>ui5-webjar</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.moewes</groupId>
             <artifactId>azure-table-storage</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>0.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
