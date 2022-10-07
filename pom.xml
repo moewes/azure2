@@ -21,7 +21,7 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <resources-plugin.version>3.3.0</resources-plugin.version>
         <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
-        <org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
+        <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <lombok.version>1.18.24</lombok.version>
 
         <azure.functions.maven.plugin.version>1.21.0</azure.functions.maven.plugin.version>
