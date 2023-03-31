@@ -19,7 +19,7 @@
         <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <resources-plugin.version>3.3.0</resources-plugin.version>
+        <resources-plugin.version>3.3.1</resources-plugin.version>
         <surefire-plugin.version>3.0.0</surefire-plugin.version>
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <lombok.version>1.18.26</lombok.version>
