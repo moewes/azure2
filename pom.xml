@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8
         </project.reporting.outputEncoding>
-        <quarkus.platform.version>2.16.6.Final</quarkus.platform.version>
+        <quarkus.platform.version>3.0.3.Final</quarkus.platform.version>
         <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
@@ -33,11 +33,10 @@
         <!--suppress UnresolvedMavenProperty -->
         <functionResourceGroup>${oidc.azure.functionResourceGroup}
         </functionResourceGroup>
-        <function>quarkus</function>
+        <function>QuarkusHttp</function>
         <stagingDirectory>
             ${project.build.directory}/azure-functions/${functionAppName}
         </stagingDirectory>
-        <quarkus.package.type>uber-jar</quarkus.package.type>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -72,7 +71,7 @@
         <dependency>
             <groupId>com.microsoft.azure.functions</groupId>
             <artifactId>azure-functions-java-library</artifactId>
-            <scope>provided</scope>
+            <!--scope>provided</scope-->
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -125,10 +124,13 @@
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
                 <version>${quarkus-plugin.version}</version>
+                <extensions>true</extensions>
                 <executions>
                     <execution>
                         <goals>
                             <goal>build</goal>
+                            <goal>generate-code</goal>
+                            <goal>generate-code-tests</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -163,39 +165,44 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-            <!-- we only use azure plugin to deploy to Azure.
-                 The directory structure is set up through various plugins in this pom -->
             <plugin>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>azure-functions-maven-plugin</artifactId>
                 <version>${azure.functions.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>package-functions</id>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <resourceGroup>${functionResourceGroup}</resourceGroup>
                     <appName>${functionAppName}</appName>
+                    <resourceGroup>${functionResourceGroup}</resourceGroup>
+                    <!--appServicePlanName>java-functions-app-service-plan</appServicePlanName-->
                     <region>${functionAppRegion}</region>
                     <runtime>
-                        <!-- runtime os, could be windows, linux or docker-->
-                        <os>windows</os>
+                        <os>linux</os>
                         <javaVersion>11</javaVersion>
-                        <!-- for docker function, please set the following parameters -->
-                        <!-- <image>[hub-user/]repo-name[:tag]</image> -->
-                        <!-- <serverId></serverId> -->
-                        <!-- <registryUrl></registryUrl>  -->
                     </runtime>
                     <appSettings>
-                        <property>
-                            <name>WEBSITE_RUN_FROM_PACKAGE</name>
-                            <value>1</value>
-                        </property>
                         <property>
                             <name>FUNCTIONS_EXTENSION_VERSION</name>
                             <value>~4</value>
                         </property>
-                        <property>
-                            <name>FUNCTIONS_WORKER_RUNTIME</name>
-                            <value>java</value>
-                        </property>
                     </appSettings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>obj</directory>
+                        </fileset>
+                    </filesets>
                 </configuration>
             </plugin>
             <plugin>
@@ -203,8 +210,7 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${resources-plugin.version}</version>
                 <executions>
-                    <!-- add azure required json files
-                         to Azure staging directory -->
+
                     <execution>
                         <id>copy-base-azure-config</id>
                         <phase>package</phase>
@@ -227,7 +233,7 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <!-- copy unpacked function.json into Azure staging directory -->
+
                     <execution>
                         <id>copy-function-json</id>
                         <phase>install</phase>
@@ -236,7 +242,7 @@
                         </goals>
                         <configuration>
                             <overwrite>true</overwrite>
-                            <outputDirectory>${stagingDirectory}/quarkus
+                            <outputDirectory>${stagingDirectory}/${function}
                             </outputDirectory>
                             <resources>
                                 <resource>
@@ -248,29 +254,6 @@
                                     </includes>
                                 </resource>
                             </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- azure plugin wants a specific name for the jar so need to copy runner jar and rename it -->
-            <plugin>
-                <groupId>com.coderplus.maven.plugins</groupId>
-                <artifactId>copy-rename-maven-plugin</artifactId>
-                <version>1.0.1</version>
-                <executions>
-                    <execution>
-                        <id>rename-file</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <sourceFile>
-                                ${project.build.directory}/${project.artifactId}-${project.version}-runner.jar
-                            </sourceFile>
-                            <destinationFile>
-                                ${stagingDirectory}/${project.artifactId}-${project.version}.jar
-                            </destinationFile>
                         </configuration>
                     </execution>
                 </executions>

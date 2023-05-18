@@ -8,9 +8,9 @@ import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.jose4j.base64url.Base64;
 
 @ApplicationScoped
