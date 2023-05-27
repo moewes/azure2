@@ -15,4 +15,20 @@
       <password>${env.PASSWORD}</password>
     </server>
   </servers>
+
+  <activeProfiles>
+    <activeProfile>github</activeProfile>
+  </activeProfiles>
+
+  <profiles>
+    <profile>
+      <id>github</id>
+      <properties>
+        <oidc.azure.functionAppName>xxx</oidc.azure.functionAppName>
+        <oidc.azure.functionAppRegion>germanywestcentral</oidc.azure.functionAppRegion>
+        <oidc.azure.functionResourceGroup>yyy</oidc.azure.functionResourceGroup>
+      </properties>
+    </profile>
+  </profiles>
+
 </settings>
