@@ -4,6 +4,8 @@ public class FormLayout {
 
     public static String getLoginForm( String message) {
 
+        String version = FormLayout.class.getPackage().getImplementationVersion();
+
         StringBuilder sb = new StringBuilder();
 
         sb.append("<!doctype html>");
@@ -17,7 +19,7 @@ public class FormLayout {
         sb.append("</head>");
         sb.append("<body style=\"box-sizing: border-box;\">");
 
-        sb.append("<ui5-dialog id=\"login-dialog\" header-text=\"Login\" open>" +
+        sb.append("<ui5-dialog id=\"login-dialog\" header-text=\"Login " + version + "\" open>" +
                 "<section " +
                 "class=\"login-form\">");
 
