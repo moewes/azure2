@@ -38,6 +38,13 @@
             ${project.build.directory}/azure-functions/${functionAppName}
         </stagingDirectory>
     </properties>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/moewes/azure2</url>
+        </repository>
+    </distributionManagement>
     <dependencyManagement>
         <dependencies>
             <dependency>
