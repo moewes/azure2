@@ -171,7 +171,9 @@ public class OidcResource {
                     .queryParam("token_type", "bearer")
                     .queryParam("access_token", "1234");
         }
-        NewCookie sessionCookie = new NewCookie("SID", code);
+        NewCookie.Builder builder = new NewCookie.Builder("SID");
+        builder.value(code);
+        NewCookie sessionCookie = builder.build();
 
         return Response.status(
                 Response.Status.FOUND
