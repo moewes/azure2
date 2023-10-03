@@ -22,7 +22,7 @@
         <resources-plugin.version>3.3.1</resources-plugin.version>
         <surefire-plugin.version>3.1.2</surefire-plugin.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-        <lombok.version>1.18.28</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
 
         <azure.functions.maven.plugin.version>1.28.0</azure.functions.maven.plugin.version>
         <!-- put these variables in your settings.xml -->
