@@ -46,8 +46,8 @@ public class FormLayout {
 
         sb.append("<form method=\"post\" id=\"login_form\">");
         sb.append(
-                "<input type=\"text\" id=\"username\" name=\"username\">" +
-                        "<input type=\"Password\" id=\"password\" name=\"password\" >");
+                "<input type=\"text\" id=\"username\" name=\"username\" hidden>" +
+                        "<input type=\"Password\" id=\"password\" name=\"password\" hidden>");
         sb.append("</form>");
         sb.append("<script>" +
                 "var loginbutton = document.getElementById(\"login_button\");" +

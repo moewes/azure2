@@ -1,5 +1,6 @@
 package net.moewes.app.oidc;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +27,10 @@ public class AuthRequestsBean {
 
     public AuthRequest extractRequestParameter(UriInfo uriInfo) {
 
+        String redirectURIasString = uriInfo.getQueryParameters().getFirst(REDIRECT_URI);
+        if (redirectURIasString == null) redirectURIasString = ""; // TODO
+        URI redirectUri = URI.create(redirectURIasString);
+
         // TODO:
         // display
         // prompt
@@ -39,7 +44,8 @@ public class AuthRequestsBean {
         return AuthRequest.builder()
                 .scope(uriInfo.getQueryParameters().getFirst(SCOPE))
                 .clientId(uriInfo.getQueryParameters().getFirst(CLIENT_ID))
-                .redirectUri(uriInfo.getQueryParameters().getFirst(REDIRECT_URI))
+               // .redirectUri(uriInfo.getQueryParameters().getFirst(REDIRECT_URI))
+                .redirectUri(redirectUri)
                 .responseType(uriInfo.getQueryParameters().getFirst(RESPONSE_TYPE))
                 .state(uriInfo.getQueryParameters().getFirst(STATE))
                 .nonce(uriInfo.getQueryParameters().getFirst(NONCE))

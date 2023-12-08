@@ -3,6 +3,8 @@ package net.moewes.app.oidc;
 import lombok.Builder;
 import lombok.Data;
 
+import java.net.URI;
+
 @Data
 @Builder
 public class AuthRequest {
@@ -10,7 +12,7 @@ public class AuthRequest {
     private String scope;
 
     private String clientId;
-    private String redirectUri;
+    private URI redirectUri;
     private String responseType;
     private String state;
     // response_mode

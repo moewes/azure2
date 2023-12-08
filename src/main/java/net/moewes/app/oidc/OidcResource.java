@@ -56,7 +56,7 @@ public class OidcResource {
         if (sid == null) { // or sid not valid // FIXME
             locationUriBuilder = getLoginFormLocationUri(authorizationRequest,null);
         } else {
-            locationUriBuilder = UriBuilder.fromPath(authorizationRequest.getRedirectUri());
+            locationUriBuilder = UriBuilder.fromUri(authorizationRequest.getRedirectUri());
             if ("code".equals(authorizationRequest.getResponseType())) {
                 locationUriBuilder.queryParam("state", authorizationRequest.getState())
                         .queryParam("code", sid);
@@ -152,7 +152,7 @@ public class OidcResource {
 
         String redirectPath;
         if (authRequest.getRedirectUri()!=null) { // Request of external App
-            redirectPath = authRequest.getRedirectUri();
+            redirectPath = authRequest.getRedirectUri().toASCIIString();
         } else {
             redirectPath = "/error";
         }
@@ -262,6 +262,8 @@ public class OidcResource {
     private UriBuilder getLoginFormLocationUri(AuthRequest authorizationRequest, String message) {
         UriBuilder locationUriBuilder;
         locationUriBuilder = UriBuilder.fromPath("/login");
+        locationUriBuilder.scheme("https"); // TODO
+        locationUriBuilder.host("cloudui-oidc.azurewebsites.net"); // TODO
         if (authorizationRequest.isValid()) {
             locationUriBuilder
                     .queryParam(STATE, authorizationRequest.getState())
