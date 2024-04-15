@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8
         </project.reporting.outputEncoding>
-        <quarkus.platform.version>3.6.6</quarkus.platform.version>
+        <quarkus.platform.version>3.7.1</quarkus.platform.version>
         <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
@@ -97,11 +97,11 @@
             <artifactId>ui5-webjar</artifactId>
             <version>0.4.3</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>net.moewes</groupId>
             <artifactId>azure-table-storage</artifactId>
             <version>0.2.3</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -202,8 +202,8 @@
                     <!--appServicePlanName>java-functions-app-service-plan</appServicePlanName-->
                     <region>${functionAppRegion}</region>
                     <runtime>
-                        <os>linux</os>
-                        <javaVersion>11</javaVersion>
+                        <os>windows</os>
+                        <javaVersion>17</javaVersion>
                     </runtime>
                     <appSettings>
                         <property>

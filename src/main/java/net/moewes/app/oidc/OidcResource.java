@@ -261,9 +261,12 @@ public class OidcResource {
 
     private UriBuilder getLoginFormLocationUri(AuthRequest authorizationRequest, String message) {
         UriBuilder locationUriBuilder;
-        locationUriBuilder = UriBuilder.fromPath("/login");
-        locationUriBuilder.scheme("https"); // TODO
-        locationUriBuilder.host("cloudui-oidc.azurewebsites.net"); // TODO
+
+        Logger.getLogger("xxx").info("baseUrl : " + baseUrl);
+
+        locationUriBuilder = UriBuilder.fromPath(baseUrl + "/login");
+    //    locationUriBuilder.scheme("https"); // TODO
+    //    locationUriBuilder.host("cloudui-oidc.azurewebsites.net"); // TODO
         if (authorizationRequest.isValid()) {
             locationUriBuilder
                     .queryParam(STATE, authorizationRequest.getState())
