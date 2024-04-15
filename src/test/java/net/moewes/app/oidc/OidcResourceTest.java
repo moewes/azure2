@@ -25,7 +25,7 @@ class OidcResourceTest {
     @Test
     void authorize_OK() {
         given()
-                .when().get("/auth?scope=openid")
+                .when().get("/auth?scope=openid&state=123")
                 .then().statusCode(200);
     }
 

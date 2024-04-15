@@ -8,7 +8,7 @@ import io.smallrye.jwt.build.JwtClaimsBuilder;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.jwt.Claims;
 import org.jboss.logging.Logger;
 
 import static net.moewes.app.oidc.AuthRequestsBean.CLIENT_ID;
@@ -54,8 +54,11 @@ public class OidcResource {
         sid = authRequestsBean.getSession(sid) == null ? null : sid;
 
         if (sid == null) { // or sid not valid // FIXME
-            locationUriBuilder = getLoginFormLocationUri(authorizationRequest,null);
+            locationUriBuilder = getLoginFormLocationUri(authorizationRequest,null).queryParam(
+                    "state",authorizationRequest.getState());
         } else {
+            AuthSession session = authRequestsBean.getSession(sid);
+            session.setNounce(authorizationRequest.getNonce());
             locationUriBuilder = UriBuilder.fromUri(authorizationRequest.getRedirectUri());
             if ("code".equals(authorizationRequest.getResponseType())) {
                 locationUriBuilder.queryParam("state", authorizationRequest.getState())
@@ -127,6 +130,9 @@ public class OidcResource {
         AuthRequest authRequest =
                 authRequestsBean.extractRequestParameter(uriInfo);
 
+        authRequest = authRequestsBean.getRequestByState(authRequest.getState());
+        // FIXME when es nicht gefunden wird
+
         log.debug("Request " + authRequest.toString());
 
         // Kenne ich den Request
@@ -140,7 +146,7 @@ public class OidcResource {
                     Response.Status.FOUND
             ).location(getLoginFormLocationUri(authRequest,message).build()).build();
         }
-        String code = authRequestsBean.createSession(username);
+        String code = authRequestsBean.createSession(username,authRequest);
 
         String redirectPath;
         if (authRequest.getRedirectUri()!=null) { // Request of external App
@@ -229,7 +235,14 @@ public class OidcResource {
                 .expiresAt(etime.toEpochSecond())
                 .issuedAt(ztime.toEpochSecond())
                 .preferredUserName(session.getUsername());
-        
+
+        if (session.getNounce()!=null) {
+            builder = builder.claim(Claims.nonce, session.getNounce());
+        }
+        else {
+            builder = builder.claim(Claims.nonce, "ID_T");
+        }
+
         String s = builder.jws().keyId(certBean.getKeyId()).sign(certBean.getPrivateKey());
 
         log.debug(s);
@@ -251,6 +264,13 @@ public class OidcResource {
                 .audience(clientId)
                 .expiresAt(etime.toEpochSecond())
                 .issuedAt(ztime.toEpochSecond());
+
+        if (session.getNounce()!=null) {
+            builder = builder.claim(Claims.nonce, session.getNounce());
+        }
+            else {
+                builder = builder.claim(Claims.nonce, "ACC_T");
+            }
 
         String s = builder.sign(certBean.getPrivateKey());
 

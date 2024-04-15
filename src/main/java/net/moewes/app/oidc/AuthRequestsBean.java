@@ -23,6 +23,7 @@ public class AuthRequestsBean {
     @Inject
     Logger log;
 
+    private final Map<String, AuthRequest> requests = new HashMap<>();
     private final Map<String, AuthSession> sessions = new HashMap<>();
 
     public AuthRequest extractRequestParameter(UriInfo uriInfo) {
@@ -41,22 +42,35 @@ public class AuthRequestsBean {
         // login_hint
         // acr_values
 
-        return AuthRequest.builder()
+        AuthRequest authRequest = AuthRequest.builder()
                 .scope(uriInfo.getQueryParameters().getFirst(SCOPE))
                 .clientId(uriInfo.getQueryParameters().getFirst(CLIENT_ID))
-               // .redirectUri(uriInfo.getQueryParameters().getFirst(REDIRECT_URI))
+                // .redirectUri(uriInfo.getQueryParameters().getFirst(REDIRECT_URI))
                 .redirectUri(redirectUri)
                 .responseType(uriInfo.getQueryParameters().getFirst(RESPONSE_TYPE))
                 .state(uriInfo.getQueryParameters().getFirst(STATE))
                 .nonce(uriInfo.getQueryParameters().getFirst(NONCE))
                 .build();
+
+        requests.put(authRequest.getState(),authRequest);
+
+        return authRequest;
     }
 
-    public String createSession(String username) {
+    public AuthRequest getRequestByState(String state) {
+        return requests.get(state);
+    }
+
+    public String createSession(String username, AuthRequest authRequest) {
 
         AuthSession session = new AuthSession();
         session.setUsername(username);
         session.setCode(UUID.randomUUID().toString());
+        if (authRequest.getNonce()!=null) {
+            session.setNounce(authRequest.getNonce());
+        } else {
+            session.setNounce("Create Session");
+        }
         sessions.put(session.getCode(), session);
         return session.getCode();
     }
