@@ -82,10 +82,11 @@ public class OidcResource {
 
         OpenIdMetaData meta = new OpenIdMetaData();
         meta.setAuthorization_endpoint(baseUrl + "/auth");
-        meta.setIssuer("azure2");
+        meta.setIssuer(baseUrl);
         meta.setToken_endpoint(baseUrl + "/token");
         meta.setUserinfo_endpoint(baseUrl + "/userinfo");
         meta.setJwks_uri(baseUrl + "/jwks");
+        meta.setRegistration_endpoint(baseUrl + "/register"); // FIXME points to nowhere
 
         return Response.ok().entity(meta).build();
     }

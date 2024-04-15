@@ -6,12 +6,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.UUID;
 
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.jose4j.base64url.Base64;
 
 @ApplicationScoped
 public class CertBean {
@@ -42,9 +43,10 @@ public class CertBean {
     public Jwk getJwk() {
 
         RSAPublicKey key = (RSAPublicKey) getPublicKey();
-
-        String encodedModulus = Base64.encode(key.getModulus().toByteArray());
-        String encodedExponent = Base64.encode((key.getPublicExponent().toByteArray()));
+        String encodedModulus =
+                Base64.getUrlEncoder().withoutPadding().encodeToString(key.getModulus().toByteArray());
+        String encodedExponent =
+                Base64.getUrlEncoder().withoutPadding().encodeToString(key.getPublicExponent().toByteArray());
 
         return Jwk.builder()
                 .alg("RS256")
