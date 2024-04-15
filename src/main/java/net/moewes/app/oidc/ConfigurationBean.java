@@ -10,6 +10,9 @@ public class ConfigurationBean {
     @ConfigProperty(name = "cloudui.oidc.baseurl")
     String baseUrl;
 
+    @ConfigProperty(name = "cloudui.oidc.dblog",defaultValue = "false")
+   boolean dblog;
+
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -29,5 +32,9 @@ public class ConfigurationBean {
         meta.setRegistration_endpoint(baseUrl + "/register"); // FIXME points to nowhere
 
         return meta;
+    }
+
+    public boolean hasDbLog() {
+        return dblog;
     }
 }

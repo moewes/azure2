@@ -7,5 +7,5 @@ public class AuthSession {
 
     private String code;
     private String username;
-    private String nounce;
+    private String nonce;
 }

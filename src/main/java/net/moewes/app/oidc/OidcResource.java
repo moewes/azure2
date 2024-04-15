@@ -8,6 +8,7 @@ import io.smallrye.jwt.build.JwtClaimsBuilder;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import net.moewes.app.oidc.logging.LogBean;
 import org.eclipse.microprofile.jwt.Claims;
 import org.jboss.logging.Logger;
 
@@ -25,6 +26,9 @@ public class OidcResource {
     Logger log;
 
     @Inject
+    LogBean logBean;
+
+    @Inject
     ConfigurationBean configBean;
 
     @Inject
@@ -36,6 +40,8 @@ public class OidcResource {
     @GET
     @Path("/auth")
     public Response authorize(@Context UriInfo uriInfo, @CookieParam("SID") String sid) {
+
+        logBean.log("/auth", uriInfo);
 
         log.debug("/auth called");
 
@@ -49,6 +55,8 @@ public class OidcResource {
             return Response.status(400, "Undefined Scope").build();
         }
 
+        authRequestsBean.saveAuthRequest(authorizationRequest);
+
         UriBuilder locationUriBuilder;
 
         sid = authRequestsBean.getSession(sid) == null ? null : sid;
@@ -58,7 +66,7 @@ public class OidcResource {
                     "state",authorizationRequest.getState());
         } else {
             AuthSession session = authRequestsBean.getSession(sid);
-            session.setNounce(authorizationRequest.getNonce());
+            session.setNonce(authorizationRequest.getNonce());
             locationUriBuilder = UriBuilder.fromUri(authorizationRequest.getRedirectUri());
             if ("code".equals(authorizationRequest.getResponseType())) {
                 locationUriBuilder.queryParam("state", authorizationRequest.getState())
@@ -81,6 +89,7 @@ public class OidcResource {
     @GET
     public Response getMetaData() {
 
+        logBean.log("/.well-known/openid-configuration",null);
         log.debug("/.well-known/openid-configuration called");
         return Response.ok().entity(configBean.getMetaData()).build();
     }
@@ -88,6 +97,7 @@ public class OidcResource {
     @Path("/jwks")
     @GET
     public Response jwks(@Context UriInfo uriInfo) {
+        logBean.log("/jwks", uriInfo);
         log.debug("/jwks called");
 
         JwksResponse result = new JwksResponse();
@@ -99,6 +109,7 @@ public class OidcResource {
     @Path("/logout")
     @GET
     public Response logout(@Context UriInfo uriInfo, @CookieParam("SID") String sid) {
+        logBean.log("/logout",uriInfo);
         log.debug("/logout called");
 
         AuthSession session = authRequestsBean.getSession(sid);
@@ -115,6 +126,8 @@ public class OidcResource {
     @Produces(MediaType.TEXT_HTML)
     public Response loginForm(@Context UriInfo uriInfo) {
 
+        logBean.log("GET /login",uriInfo);
+
         String message = uriInfo.getQueryParameters().getFirst(MESSAGE);
         String loginForm = FormLayout.getLoginForm(message);
         return Response.ok().entity(loginForm).build();
@@ -125,6 +138,7 @@ public class OidcResource {
     @Consumes("application/x-www-form-urlencoded")
     public Response login(@Context UriInfo uriInfo, MultivaluedMap<String, String> form) {
 
+        logBean.log("POST /login", uriInfo);
         log.debug("/login called");
 
         AuthRequest authRequest =
@@ -181,6 +195,8 @@ public class OidcResource {
     @Path("/revoke")
     @POST
     public Response revoke(@Context UriInfo uriInfo) {
+
+        logBean.log("/revoke",uriInfo);
         log.debug("/revoke called");
 
         return Response.ok().build();
@@ -192,6 +208,7 @@ public class OidcResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response token(@Context UriInfo uriInfo, MultivaluedMap<String, String> form) {
 
+        logBean.log("/token",uriInfo);
         log.debug("/token called");
         log.debug(form.toString());
 
@@ -213,6 +230,7 @@ public class OidcResource {
     @GET
     public Response userinfo(@Context UriInfo uriInfo) {
 
+        logBean.log("/userinfo",uriInfo);
         log.debug("/userinfo called");
 
         return Response.ok().build();
@@ -236,8 +254,8 @@ public class OidcResource {
                 .issuedAt(ztime.toEpochSecond())
                 .preferredUserName(session.getUsername());
 
-        if (session.getNounce()!=null) {
-            builder = builder.claim(Claims.nonce, session.getNounce());
+        if (session.getNonce()!=null) {
+            builder = builder.claim(Claims.nonce, session.getNonce());
         }
         else {
             builder = builder.claim(Claims.nonce, "ID_T");
@@ -265,8 +283,8 @@ public class OidcResource {
                 .expiresAt(etime.toEpochSecond())
                 .issuedAt(ztime.toEpochSecond());
 
-        if (session.getNounce()!=null) {
-            builder = builder.claim(Claims.nonce, session.getNounce());
+        if (session.getNonce()!=null) {
+            builder = builder.claim(Claims.nonce, session.getNonce());
         }
             else {
                 builder = builder.claim(Claims.nonce, "ACC_T");

@@ -52,11 +52,12 @@ public class AuthRequestsBean {
                 .nonce(uriInfo.getQueryParameters().getFirst(NONCE))
                 .build();
 
-        requests.put(authRequest.getState(),authRequest);
-
         return authRequest;
     }
 
+    public void saveAuthRequest(AuthRequest authRequest) {
+        requests.put(authRequest.getState(),authRequest);
+    }
     public AuthRequest getRequestByState(String state) {
         return requests.get(state);
     }
@@ -67,9 +68,9 @@ public class AuthRequestsBean {
         session.setUsername(username);
         session.setCode(UUID.randomUUID().toString());
         if (authRequest.getNonce()!=null) {
-            session.setNounce(authRequest.getNonce());
+            session.setNonce(authRequest.getNonce());
         } else {
-            session.setNounce("Create Session");
+            session.setNonce("Create Session");
         }
         sessions.put(session.getCode(), session);
         return session.getCode();
