@@ -8,7 +8,7 @@
     <artifactId>azure2</artifactId>
     <version>0.2.0-SNAPSHOT</version>
     <properties>
-        <compiler-plugin.version>3.11.0</compiler-plugin.version>
+        <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
@@ -130,7 +130,7 @@
             <plugin>
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
-                <version>1.20.0</version>
+                <version>1.21.0</version>
                 <configuration>
                     <pushRemote>true</pushRemote>
                     <versionDigitToIncrement>1</versionDigitToIncrement>
