@@ -219,6 +219,10 @@ public class OidcResource {
         ztime.toEpochSecond();
         ZonedDateTime etime = ztime.plusMinutes(15);
 
+        if (clientId==null) {
+            clientId = "frontend"; // FIXME
+        }
+
         JwtClaimsBuilder builder = Jwt.issuer(configBean.getIssuer())
                 .subject(session.getUsername())
                 .audience(clientId)
@@ -238,6 +242,9 @@ public class OidcResource {
         ZonedDateTime ztime = ZonedDateTime.now();
         ztime.toEpochSecond();
         ZonedDateTime etime = ztime.plusMinutes(15);
+        if (clientId==null) {
+            clientId = "frontend"; // FIXME
+        }
 
         JwtClaimsBuilder builder = Jwt.issuer(configBean.getIssuer())
                 .subject(session.getUsername())
