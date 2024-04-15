@@ -21,11 +21,11 @@ public class OidcResource {
 
     private static final String MESSAGE = "message";
 
-    @ConfigProperty(name = "cloudui.oidc.baseurl")
-    String baseUrl;
-
     @Inject
     Logger log;
+
+    @Inject
+    ConfigurationBean configBean;
 
     @Inject
     CertBean certBean;
@@ -79,16 +79,7 @@ public class OidcResource {
     public Response getMetaData() {
 
         log.debug("/.well-known/openid-configuration called");
-
-        OpenIdMetaData meta = new OpenIdMetaData();
-        meta.setAuthorization_endpoint(baseUrl + "/auth");
-        meta.setIssuer(baseUrl);
-        meta.setToken_endpoint(baseUrl + "/token");
-        meta.setUserinfo_endpoint(baseUrl + "/userinfo");
-        meta.setJwks_uri(baseUrl + "/jwks");
-        meta.setRegistration_endpoint(baseUrl + "/register"); // FIXME points to nowhere
-
-        return Response.ok().entity(meta).build();
+        return Response.ok().entity(configBean.getMetaData()).build();
     }
 
     @Path("/jwks")
@@ -228,7 +219,7 @@ public class OidcResource {
         ztime.toEpochSecond();
         ZonedDateTime etime = ztime.plusMinutes(15);
 
-        JwtClaimsBuilder builder = Jwt.issuer("azure2")
+        JwtClaimsBuilder builder = Jwt.issuer(configBean.getIssuer())
                 .subject(session.getUsername())
                 .audience(clientId)
                 .expiresAt(etime.toEpochSecond())
@@ -248,7 +239,7 @@ public class OidcResource {
         ztime.toEpochSecond();
         ZonedDateTime etime = ztime.plusMinutes(15);
 
-        JwtClaimsBuilder builder = Jwt.issuer("azure2")
+        JwtClaimsBuilder builder = Jwt.issuer(configBean.getIssuer())
                 .subject(session.getUsername())
                 .audience(clientId)
                 .expiresAt(etime.toEpochSecond())
@@ -263,9 +254,9 @@ public class OidcResource {
     private UriBuilder getLoginFormLocationUri(AuthRequest authorizationRequest, String message) {
         UriBuilder locationUriBuilder;
 
-        Logger.getLogger("xxx").info("baseUrl : " + baseUrl);
+        Logger.getLogger("xxx").info("baseUrl : " + configBean.getBaseUrl());
 
-        locationUriBuilder = UriBuilder.fromPath(baseUrl + "/login");
+        locationUriBuilder = UriBuilder.fromPath(configBean.getBaseUrl() + "/login");
     //    locationUriBuilder.scheme("https"); // TODO
     //    locationUriBuilder.host("cloudui-oidc.azurewebsites.net"); // TODO
         if (authorizationRequest.isValid()) {
