@@ -97,11 +97,11 @@
             <artifactId>ui5-webjar</artifactId>
             <version>0.4.3</version>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>net.moewes</groupId>
             <artifactId>azure-table-storage</artifactId>
             <version>0.2.3</version>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
