@@ -1,7 +1,9 @@
 package net.moewes.app.oidc;
 
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
@@ -10,6 +12,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import net.moewes.app.oidc.logging.LogBean;
 import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.logging.Logger;
 
 import static net.moewes.app.oidc.AuthRequestsBean.CLIENT_ID;
@@ -45,6 +48,8 @@ public class OidcResource {
 
         log.debug("/auth called");
 
+        UriBuilder locationUriBuilder;
+
         AuthRequest authorizationRequest =
                 authRequestsBean.extractRequestParameter(uriInfo);
 
@@ -55,9 +60,22 @@ public class OidcResource {
             return Response.status(400, "Undefined Scope").build();
         }
 
+        if (authorizationRequest.getResponseType() == null ) {
+            locationUriBuilder =
+                    UriBuilder.fromUri(authorizationRequest.getRedirectUri()).queryParam("error", "unsupported_response_type");
+
+            if (authorizationRequest.getState()!=null) {
+                locationUriBuilder.queryParam("state",authorizationRequest.getState());
+            }
+
+            return Response.status(
+                    Response.Status.FOUND
+            ).location(locationUriBuilder.build()).build();
+        }
+
         authRequestsBean.saveAuthRequest(authorizationRequest);
 
-        UriBuilder locationUriBuilder;
+
 
         sid = authRequestsBean.getSession(sid) == null ? null : sid;
 
@@ -233,7 +251,14 @@ public class OidcResource {
         logBean.log("/userinfo",uriInfo);
         log.debug("/userinfo called");
 
-        return Response.ok().build();
+        JwtClaimsBuilder builder = Jwt.subject("admin").claim(Claims.full_name,"the admin");
+
+        Map<String,String> result = new HashMap<>();
+
+        result.put(Claims.sub.name(),"admin");
+        result.put(Claims.full_name.name(), "the admin");
+
+        return Response.ok(result).build();
     }
 
     private String getIdToken(Logger log, String clientId, String code) {
