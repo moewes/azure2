@@ -1,6 +1,7 @@
 # Project exclude paths
 /target/
 /.idea/
+/.azure/
 /.settings/
 .classpath
 .factorypath
