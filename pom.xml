@@ -135,8 +135,8 @@
                     <pushRemote>true</pushRemote>
                     <versionDigitToIncrement>2</versionDigitToIncrement>
                     <gitFlowConfig>
-                        <developmentBranch>main</developmentBranch>
-                        <productionBranch>main</productionBranch>
+                        <developmentBranch>master</developmentBranch>
+                        <productionBranch>master</productionBranch>
                     </gitFlowConfig>
                 </configuration>
             </plugin>
