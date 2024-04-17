@@ -8,3 +8,4 @@
 .project
 *.iml
 .DS_Store
+/.azure/
