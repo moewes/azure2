@@ -227,6 +227,15 @@ public class OidcResource {
 
     @Path("/userinfo")
     @POST
+    public Response userinfoPost(@Context UriInfo uriInfo) {
+
+        logBean.log("/userinfo",uriInfo);
+        log.debug("/userinfo called");
+
+        return Response.ok().build();
+    }
+
+    @Path("/userinfo")
     @GET
     public Response userinfo(@Context UriInfo uriInfo) {
 
