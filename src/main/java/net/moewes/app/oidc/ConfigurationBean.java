@@ -1,7 +1,6 @@
 package net.moewes.app.oidc;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
@@ -11,7 +10,7 @@ public class ConfigurationBean {
     String baseUrl;
 
     @ConfigProperty(name = "cloudui.oidc.dblog",defaultValue = "false")
-   boolean dblog;
+    boolean dblog;
 
     public String getBaseUrl() {
         return baseUrl;
@@ -30,7 +29,7 @@ public class ConfigurationBean {
         meta.setUserinfo_endpoint(baseUrl + "/userinfo");
         meta.setJwks_uri(baseUrl + "/jwks");
         meta.setRegistration_endpoint(baseUrl + "/register"); // FIXME points to nowhere
-
+        meta.setScopes_supported("openid");
         return meta;
     }
 
