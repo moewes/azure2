@@ -22,7 +22,7 @@
         <azure.functions.maven.plugin.version>1.33.0</azure.functions.maven.plugin.version>
         <resources-plugin.version>3.3.1</resources-plugin.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-        <lombok.version>1.18.32</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
 
         <!-- put these variables in your settings.xml -->
         <!--suppress UnresolvedMavenProperty -->
