@@ -13,7 +13,7 @@ public class FormLayout {
         sb.append("<head>");
         sb.append("<meta charset=\"utf-8\">");
         sb.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-        sb.append("<script src=\"/webjars/cloud-ui-ui5/0.4.1/out.js\"></script>");
+        sb.append("<script src=\"/webjars/ui5-webjar/out.js\"></script>");
         sb.append(getStyles());
 
         sb.append("</head>");
